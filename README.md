@@ -13,3 +13,5 @@ Uruchomienie lokalne
 3.	W Package Manager Console wykonaj: Update-Database
 4.	Uruchom aplikacje
 5.	Aplikacja automatycznie utworzy konto: admin@kino.pl / Admin123! 
+
+Dokumentacja załączona w plikach
