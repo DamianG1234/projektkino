@@ -1,0 +1,40 @@
+﻿@model IEnumerable<AplikacjaKino.Models.Rezerwacja>
+@{
+    ViewData["Title"] = "Moje rezerwacje";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Moje rezerwacje</h2>
+
+    @if (!Model.Any())
+    {
+            <div class="alert alert-info">Nie masz jeszcze żadnych rezerwacji.</div>
+            <a href="@Url.Action("Index","Seans")" class="btn btn-primary">Zobacz repertuar</a>
+    }
+    else
+    {
+            <div class="row">
+            @foreach (var r in Model)
+            {
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-dark text-white">
+                                    <h5 class="mb-0">@r.Seans.Film.Tytul</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Data:</strong> @r.Seans.DataGodzina.ToString("dd.MM.yyyy HH:mm")</p>
+                                    <p><strong>Sala:</strong> @r.Seans.Sala.Nazwa</p>
+                                    <p><strong>Rząd:</strong> @r.NumerRzedu, <strong>Miejsce:</strong> @r.NumerMiejsca</p>
+                                </div>
+                                <div class="card-footer">
+                                    <form asp-action="UsunMojaRezerwacje" method="post">
+                                        <input type="hidden" name="id" value="@r.Id" />
+                                        <button type="submit" class="btn btn-danger w-100">Usuń rezerwację</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+            }
+            </div>
+    }
+</div>

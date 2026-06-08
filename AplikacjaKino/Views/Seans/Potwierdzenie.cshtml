@@ -1,0 +1,22 @@
+﻿@model AplikacjaKino.Models.Rezerwacja
+@{
+    ViewData["Title"] = "Potwierdzenie rezerwacji";
+}
+
+<div class="container mt-5">
+    <div class="card col-md-6 mx-auto shadow">
+        <div class="card-header bg-success text-white text-center">
+            <h4>✅ Rezerwacja potwierdzona!</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Film:</strong> @Model.Seans.Film.Tytul</p>
+            <p><strong>Data:</strong> @Model.Seans.DataGodzina.ToString("dd.MM.yyyy HH:mm")</p>
+            <p><strong>Sala:</strong> @Model.Seans.Sala.Nazwa</p>
+            <p><strong>Rząd:</strong> @Model.NumerRzedu, Miejsce: @Model.NumerMiejsca</p>
+        </div>
+        <div class="card-footer text-center">
+            <a href="@Url.Action("MojeRezerwacje","Seans")" class="btn btn-success me-2">Moje rezerwacje</a>
+            <a href="@Url.Action("Index","Seans")" class="btn btn-primary">Wróć do repertuaru</a>
+        </div>
+    </div>
+</div>

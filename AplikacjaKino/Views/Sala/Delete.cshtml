@@ -1,0 +1,20 @@
+﻿@model AplikacjaKino.Models.Sala
+@{
+    ViewData["Title"] = "Usuń salę";
+}
+
+<h2 class="mb-4">Czy na pewno chcesz usunąć tę salę?</h2>
+
+<div class="card col-md-4">
+    <div class="card-body">
+        <p><strong>Nazwa:</strong> @Model.Nazwa</p>
+        <p><strong>Rzędy:</strong> @Model.LiczbaRzedow</p>
+        <p><strong>Miejsca w rzędzie:</strong> @Model.MiejscWRzedzie</p>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post" class="mt-3">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    <a href="@Url.Action("Index","Sala")" class="btn btn-secondary">Anuluj</a>
+</form>

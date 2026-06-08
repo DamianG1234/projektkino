@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Dodaj seans";
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Dodaj seans</h2>
+
+    <div class="row">
+        <div class="col-md-5">
+
+            @if (TempData["Blad"] != null)
+            {
+                    <div class="alert alert-danger">@TempData["Blad"]</div>
+            }
+
+            <form asp-action="Create" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Film</label>
+                    <select name="FilmId" id="FilmId" class="form-select" required>
+                        <option value="">-- wybierz film --</option>
+                        @foreach (var film in ViewBag.Filmy)
+                        {
+                                <option value="@film.Id">@film.Tytul</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sala</label>
+                    <select name="SalaId" id="SalaId" class="form-select" required>
+                        <option value="">-- wybierz salę --</option>
+                        @foreach (var sala in ViewBag.Sale)
+                        {
+                                <option value="@sala.Id">@sala.Nazwa</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data</label>
+                    <input type="date" id="DataOnly" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Godzina</label>
+                    <input type="time" id="TimeOnly" class="form-control" required />
+                </div>
+                <input type="hidden" name="DataGodzina" id="DataGodzina" />
+                <button type="submit" class="btn btn-primary" id="btn-zapisz">Zapisz</button>
+                <a href="@Url.Action("Manage","Seans")" class="btn btn-secondary">Anuluj</a>
+            </form>
+        </div>
+
+        <div class="col-md-5 ms-4">
+            <div class="card shadow-sm" id="kalendarz-card" style="display:none">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">Zajęte godziny — <span id="kalendarz-sala">-</span></h6>
+                </div>
+                <div class="card-body" id="kalendarz-body">
+                    <p class="text-muted">Brak seansów w tym dniu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var salaSelect = document.getElementById('SalaId');
+        var dataInput = document.getElementById('DataOnly');
+        var timeInput = document.getElementById('TimeOnly');
+        var hiddenInput = document.getElementById('DataGodzina');
+
+        function aktualizujKalendarz() {
+            var salaId = salaSelect.value;
+            var data = dataInput.value;
+
+            if (!salaId || !data) return;
+
+            var salaNazwa = salaSelect.options[salaSelect.selectedIndex].text;
+            document.getElementById('kalendarz-sala').textContent = salaNazwa + ', ' + data;
+            document.getElementById('kalendarz-card').style.display = 'block';
+
+            fetch('/Seans/ZajeteSale?salaId=' + salaId + '&data=' + data)
+                .then(function(r) { return r.json(); })
+                .then(function(seanse) {
+                    var body = document.getElementById('kalendarz-body');
+                    if (seanse.length === 0) {
+                        body.innerHTML = '<p class="text-success mb-0">✅ Brak seansów — sala wolna cały dzień.</p>';
+                    } else {
+                        var html = '<ul class="list-group list-group-flush">';
+                        seanse.forEach(function(s) {
+                            html += '<li class="list-group-item d-flex justify-content-between">' +
+                                '<span>' + s.film + '</span>' +
+                                '<span class="badge bg-danger">' + s.od + ' — ' + s.do_ + '</span>' +
+                                '</li>';
+                        });
+                        html += '</ul>';
+                        body.innerHTML = html;
+                    }
+                });
+        }
+
+        function polaczDateIGodzine() {
+            var data = dataInput.value;
+            var czas = timeInput.value;
+            if (data && czas) {
+                hiddenInput.value = data + 'T' + czas;
+            }
+        }
+
+        salaSelect.addEventListener('change', aktualizujKalendarz);
+        dataInput.addEventListener('change', function() {
+            aktualizujKalendarz();
+            polaczDateIGodzine();
+        });
+        timeInput.addEventListener('change', polaczDateIGodzine);
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            polaczDateIGodzine();
+            if (!hiddenInput.value) {
+                e.preventDefault();
+                alert('Wypełnij datę i godzinę.');
+            }
+        });
+    </script>
+}

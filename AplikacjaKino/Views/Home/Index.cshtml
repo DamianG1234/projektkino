@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Kino - strona główna";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">AplikacjaKino</h1>
+        <p class="lead text-muted">Zarezerwuj swoje miejsce na ulubiony seans online</p>
+        <a href="@Url.Action("Index","Seans")" class="btn btn-primary btn-lg mt-2">Zobacz repertuar</a>
+    </div>
+
+    <div class="row text-center mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm p-3">
+                <div class="card-body">
+                    <h3>1.</h3>
+                    <h5>Sprawdź repertuar</h5>
+                    <p class="text-muted">Przeglądaj aktualne seanse i wybierz film dla siebie.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm p-3">
+                <div class="card-body">
+                    <h3>2.</h3>
+                    <h5>Wybierz miejsce</h5>
+                    <p class="text-muted">Interaktywny plan sali - wybierz wolny fotel jednym kliknięciem.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm p-3">
+                <div class="card-body">
+                    <h3>3.</h3>
+                    <h5>Potwierdź rezerwację</h5>
+                    <p class="text-muted">Wpisz swoje dane i gotowe - miejsce czeka na Ciebie.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

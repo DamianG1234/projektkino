@@ -1,0 +1,22 @@
+﻿@model AplikacjaKino.Models.Seans
+@{
+    ViewData["Title"] = "Usuń seans";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Czy na pewno chcesz usunąć ten seans?</h2>
+
+    <div class="card col-md-5">
+        <div class="card-body">
+            <p><strong>Film:</strong> @Model.Film.Tytul</p>
+            <p><strong>Data:</strong> @Model.DataGodzina.ToString("dd.MM.yyyy HH:mm")</p>
+            <p><strong>Sala:</strong> @Model.Sala.Nazwa</p>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-3">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Usuń</button>
+        <a href="@Url.Action("Manage","Seans")" class="btn btn-secondary">Anuluj</a>
+    </form>
+</div>

@@ -1,0 +1,31 @@
+﻿@model AplikacjaKino.Models.Sala
+@{
+    ViewData["Title"] = "Edytuj salę";
+}
+
+<h2 class="mb-4">Edytuj salę</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Nazwa" class="form-label">Nazwa sali</label>
+                <input asp-for="Nazwa" class="form-control" />
+                <span asp-validation-for="Nazwa" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LiczbaRzedow" class="form-label">Liczba rzędów</label>
+                <input asp-for="LiczbaRzedow" class="form-control" type="number" />
+                <span asp-validation-for="LiczbaRzedow" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MiejscWRzedzie" class="form-label">Miejsc w rzędzie</label>
+                <input asp-for="MiejscWRzedzie" class="form-control" type="number" />
+                <span asp-validation-for="MiejscWRzedzie" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <a href="@Url.Action("Index","Sala")" class="btn btn-secondary">Anuluj</a>
+        </form>
+    </div>
+</div>

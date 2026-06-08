@@ -1,0 +1,113 @@
+﻿@model AplikacjaKino.Models.Seans
+@{
+    ViewData["Title"] = "Rezerwacja miejsca";
+    var zajeteMiejsca = Model.Rezerwacje.Select(r => r.NumerRzedu + "_" + r.NumerMiejsca).ToList();
+}
+<div class="container mt-4">
+    <h2 class="mb-1 text-center">@Model.Film.Tytul</h2>
+    <p class="text-muted text-center mb-4">@Model.DataGodzina.ToString("dd.MM.yyyy HH:mm") | Sala: @Model.Sala.Nazwa</p>
+
+    <div class="d-flex justify-content-center gap-4 mb-3">
+        <span><span class="badge bg-success">&nbsp;&nbsp;&nbsp;</span> Wolne</span>
+        <span><span class="badge bg-danger">&nbsp;&nbsp;&nbsp;</span> Zajęte</span>
+        <span><span class="badge bg-warning text-dark">&nbsp;&nbsp;&nbsp;</span> Wybrane</span>
+    </div>
+
+    <div class="text-center mb-3">
+        <div class="bg-dark text-white py-2 px-5 d-inline-block rounded mb-4" style="min-width:200px">EKRAN</div>
+    </div>
+
+    <div id="sala" class="d-flex flex-column align-items-center gap-2 mb-4">
+        @for (int rzad = 1; rzad <= Model.Sala.LiczbaRzedow; rzad++)
+        {
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="text-muted me-2" style="width:20px">@rzad</span>
+                @for (int miejsce = 1; miejsce <= Model.Sala.MiejscWRzedzie; miejsce++)
+                {
+                    var klucz = rzad + "_" + miejsce;
+                    var zajete = zajeteMiejsca.Contains(klucz);
+                            <button type="button"
+                                    class="btn btn-sm @(zajete ? "btn-danger" : "btn-success") miejsce-btn"
+                                    data-rzad="@rzad"
+                                    data-miejsce="@miejsce"
+                    @(zajete ? "disabled" : "")
+                                    style="width:36px; height:36px;">
+                        @miejsce
+                            </button>
+                }
+                </div>
+        }
+    </div>
+
+    <div id="alert-max" class="alert alert-warning text-center" style="display:none; max-width:500px; margin: 0 auto 1rem;">
+        Możesz wybrać maksymalnie 10 miejsc naraz.
+    </div>
+
+    <div class="card shadow-sm" id="formularz-card" style="display:none; max-width:500px; margin: 0 auto;">
+        <div class="card-body p-4">
+            <h5 class="card-title mb-3">Potwierdź rezerwację</h5>
+            <p class="text-muted mb-3">Wybrane miejsca: <strong id="info-miejsca">-</strong></p>
+            <form asp-action="RezerwujWiele" method="post">
+                <input type="hidden" name="SeansId" value="@Model.Id" />
+                <div id="hidden-miejsca"></div>
+                <button type="submit" class="btn btn-primary w-100">Potwierdź rezerwację</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var wybraneMiejsca = [];
+        var MAX = 10;
+
+        document.querySelectorAll('.miejsce-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var rzad = btn.getAttribute('data-rzad');
+                var miejsce = btn.getAttribute('data-miejsce');
+                var klucz = rzad + '_' + miejsce;
+
+                if (btn.classList.contains('btn-warning')) {
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-success');
+                    wybraneMiejsca = wybraneMiejsca.filter(function (m) { return m.klucz !== klucz; });
+                } else {
+                    if (wybraneMiejsca.length >= MAX) {
+                        document.getElementById('alert-max').style.display = 'block';
+                        return;
+                    }
+                    document.getElementById('alert-max').style.display = 'none';
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-warning');
+                    wybraneMiejsca.push({ klucz: klucz, rzad: rzad, miejsce: miejsce });
+                }
+
+                aktualizujFormularz();
+            });
+        });
+
+        function aktualizujFormularz() {
+            var hiddenDiv = document.getElementById('hidden-miejsca');
+            hiddenDiv.innerHTML = '';
+
+            if (wybraneMiejsca.length === 0) {
+                document.getElementById('formularz-card').style.display = 'none';
+                document.getElementById('info-miejsca').textContent = '-';
+                return;
+            }
+
+            document.getElementById('formularz-card').style.display = 'block';
+
+            var opisy = wybraneMiejsca.map(function (m) {
+                return 'rząd ' + m.rzad + ' miejsce ' + m.miejsce;
+            });
+            document.getElementById('info-miejsca').textContent = opisy.join(', ');
+
+            wybraneMiejsca.forEach(function (m, i) {
+                hiddenDiv.innerHTML +=
+                    '<input type="hidden" name="Miejsca[' + i + '].NumerRzedu" value="' + m.rzad + '" />' +
+                    '<input type="hidden" name="Miejsca[' + i + '].NumerMiejsca" value="' + m.miejsce + '" />';
+            });
+        }
+    </script>
+}

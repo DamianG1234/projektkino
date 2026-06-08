@@ -1,0 +1,32 @@
+﻿@model IEnumerable<AplikacjaKino.Models.Film>
+@{
+    ViewData["Title"] = "Zarządzanie filmami";
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Filmy</h2>
+    <a href="@Url.Action("Create","Film")" class="btn btn-primary mb-3">+ Dodaj film</a>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Tytuł</th>
+                <th>Opis</th>
+                <th>Czas (min)</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var film in Model)
+            {
+                    <tr>
+                        <td>@film.Tytul</td>
+                        <td>@film.Opis</td>
+                        <td>@film.CzasTrwaniaMin</td>
+                        <td>
+                            <a href="@Url.Action("Edit","Film", new { id = film.Id })" class="btn btn-sm btn-warning">Edytuj</a>
+                            <a href="@Url.Action("Delete","Film", new { id = film.Id })" class="btn btn-sm btn-danger">Usuń</a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,87 @@
+﻿@model IEnumerable<AplikacjaKino.Models.Seans>
+@{
+    ViewData["Title"] = "Repertuar";
+    var filmy = Model.Select(s => s.Film.Tytul).Distinct().OrderBy(t => t).ToList();
+}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Repertuar kina</h2>
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+        <button class="btn btn-primary filtr-btn active" data-filtr="wszystkie">Wszystkie</button>
+        @foreach (var film in filmy)
+        {
+                <button class="btn btn-outline-primary filtr-btn" data-filtr="@film">@film</button>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+            <div class="alert alert-info text-center">Brak dostępnych seansów.</div>
+    }
+    else
+    {
+            <div class="row" id="seanse-lista">
+            @foreach (var seans in Model)
+            {
+                        <div class="col-md-4 mb-4 seans-card" data-film="@seans.Film.Tytul">
+                            <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(seans.Film.Okladka))
+                        {
+                                        <img src="@seans.Film.Okladka" class="card-img-top" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                                        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:200px;">
+                                            <span class="text-white">🎬 Brak okładki</span>
+                                        </div>
+                        }
+                                <div class="card-header bg-dark text-white">
+                                    <h5 class="mb-0">@seans.Film.Tytul</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Data i godzina:</strong> @seans.DataGodzina.ToString("dd.MM.yyyy HH:mm")</p>
+                                    <p><strong>Sala:</strong> @seans.Sala.Nazwa</p>
+                                    <p><strong>Czas trwania:</strong> @seans.Film.CzasTrwaniaMin min</p>
+                                    <p class="text-muted">@seans.Film.Opis</p>
+                                </div>
+                                <div class="card-footer">
+                            @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+                            {
+                                            <a href="@Url.Action("Rezerwuj","Seans", new { id = seans.Id })" class="btn btn-primary w-100">Zarezerwuj miejsce</a>
+                            }
+                            else if (!User.Identity.IsAuthenticated)
+                            {
+                                            <a href="/Identity/Account/Login" class="btn btn-secondary w-100">Zaloguj się, aby zarezerwować</a>
+                            }
+                                </div>
+                            </div>
+                        </div>
+            }
+            </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.filtr-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.filtr-btn').forEach(function (b) {
+                    b.classList.remove('active', 'btn-primary');
+                    b.classList.add('btn-outline-primary');
+                });
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-outline-primary');
+
+                var filtr = btn.getAttribute('data-filtr');
+
+                document.querySelectorAll('.seans-card').forEach(function (card) {
+                    if (filtr === 'wszystkie' || card.getAttribute('data-film') === filtr) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

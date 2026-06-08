@@ -1,0 +1,37 @@
+﻿@model IEnumerable<AplikacjaKino.Models.Seans>
+@{
+    ViewData["Title"] = "Zarządzanie seansami";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Seanse</h2>
+    <a href="@Url.Action("Create","Seans")" class="btn btn-primary mb-3">+ Dodaj seans</a>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Film</th>
+                <th>Data i godzina</th>
+                <th>Sala</th>
+                <th>Rezerwacje</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seans in Model)
+            {
+                    <tr>
+                        <td>@seans.Film.Tytul</td>
+                        <td>@seans.DataGodzina.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@seans.Sala.Nazwa</td>
+                        <td>
+                            <a href="@Url.Action("Rezerwacje","Seans", new { id = seans.Id })" class="btn btn-sm btn-info">Podgląd</a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Delete","Seans", new { id = seans.Id })" class="btn btn-sm btn-danger">Usuń</a>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
